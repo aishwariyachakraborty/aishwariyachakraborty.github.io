@@ -1,0 +1,68 @@
+
+/* Add your CSS styles here */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: lavender;
+    /* #f4f4f4; */
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    /* font-family: monospace; */
+    color: #333;
+}
+p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    /* justify-content: space-between; */
+    text-align: justify;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+nav ul li a:hover {
+    color: #ff00aa; /* Change to your preferred hover color */
+}
+hr {
+    border: 1px solid #ccc; /* Set the color and style of the line */
+    margin-top: 20px; /* Add margin to create space between the menu and the line */
+}
+.header {
+    display: flex;
+    align-items: center;
+}
+.profile-photo {
+    max-width: 300px;
+    margin-right: 20px;
+    /* margin-left: auto; */
+}
+.summary {
+    flex-grow: 1;
+}
+.fab, .ai, .fas {
+    font-size: 30px; /* Adjust the icon size */
+    margin-right: 10px; /* Add space between the icon and text */
+    margin-left: 10px;
+    color: #333; /* Set the icon color */
+}
+/* Add more styles for your resume sections */
