@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aishwariya Chakraborty - All Things Tech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="techblog.html">Tech Blog</a></li> <!-- Add this line for the blog link -->
+                    <li><a href="informalblog.html">Non-Tech Blog</a></li>
+                </ul>
+            </nav>
+            <hr>
+        </header>
+        <section class="blog-post">
+            <h2 class="blog-title">NVIDIA Profiling Tools</h2>
+            <p class="blog-date">Published on [Date]</p>
+            <p>
+                
+            </p>
+        </section>
+    </div>
+</body>
+</html>
+
+
+
+NVIDIA Nsight Systems
+
+
+Nvidia Nsight compute - 
+https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html
+When profiling an application with NVIDIA Nsight Compute, the user launches the NVIDIA Nsight Compute frontend (either the UI or the CLI) on the host system, 
+which in turn starts the actual application as a new process on the target system. While host and target are often the same machine, the target can also be 
+a remote system with a potentially different operating system.
+The tool inserts its measurement libraries into the application process, which allow the profiler to intercept communication with the CUDA user-mode driver. 
+In addition, when a kernel launch is detected, the libraries can collect the requested performance metrics from the GPU. The results are then transferred 
+back to the frontend.
+
+Depending on which metrics are to be collected, kernels might need to be replayed one or more times, since not all metrics can be collected in a single pass. 
+Kernel replay - save and restore all accessible memory for the kernel for each pass - all metrics pertaining to a specific kernel instance
+Application replay - the complete application is run multiple times, so that in each run one of those passes metrics can be collected per kernel. does not 
+have memory save-and-restore overhead. - all metrics pertaining to a specific kernel instance
+Range replay - captures and replays complete ranges of CUDA API calls and kernel launches within the profiled application. range defined using Profiler 
+Start/Stop API or NVTX Ranges - all requested metrics in the range
+Application Range Replay - A range of workloads is replayed by re-running the entire application without modifying interactions or saving and restoring memory.
+
+The Memory Chart shows a graphical, logical representation of performance data for memory subunits on and off the GPU. Performance data includes transfer sizes, 
+hit rates, number of instructions or requests, etc.
+
+NVIDIA Nsight Compute supports collecting many metrics by sampling the GPU’s performance monitors (PM) periodically at fixed intervals.     
+NVIDIA Nsight Compute supports periodic sampling of the warp program counter and warp scheduler state.
+
+Overhead is less for hardware provided metrics. Metrics which don’t have string “sass” in the name fall in this category.
+Metrics which have string “sass” in the name - Software instrumented metrics are expensive as CUPTI needs to instrument the kernel to collect these. Further 
+these metrics cannot be combined with any other metric in the same pass as otherwise instrumented code will also contribute to the metric value.
+
+
+
+
+Depending on the selected metric, data is collected either through a hardware performance monitor on the GPU, through software patching of the kernel instructions or via a launch or device attribute.
+
+
+
+
+CUPTI
+https://docs.nvidia.com/cupti/main/main.html#evolution-of-the-profiling-apis
+CUPTI, the CUDA Profiling Tools Interface, ensures seamless profiling compatibility for CUDA applications across various GPU architectures and CUDA driver versions
+
+
+
+Nvidia smi
+NVML - Directly query NVML using c API to get the intermediate memory/compute usage values - https://pypi.org/project/nvidia-ml-py/
