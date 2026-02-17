@@ -12,7 +12,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aishwariya Chakraborty - All Things Tech</title>
+    <title>Aishwariya Chakraborty - Blog</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
@@ -34,16 +34,35 @@
             <p class="blog-title">NVIDIA Profiling Tools</p>
             <p class="blog-date">Published in January 2026</p>
             <p align="justify">
-                The increasing popularity of Nvidia GPUs can be partially attributed to the availability of a stable ecosystem of tools which aid in improving the usability of the accelerators. One such very important set of tools are the profiling tools, which provide fine grained visibility into the hardware as well as software stack built on top of it. This, in turn, helps to find out bottlenecks and pin-point causes of inefficiences in the performance of workloads running on these devices.
+                The increasing popularity of Nvidia GPUs can be partially attributed to the availability of a stable ecosystem of tools which aid in improving the usability of these accelerators. One such very important set of tools are the profiling tools, which provide fine grained visibility into the hardware as well as software stack built on top of it. This, in turn, helps to find out bottlenecks and pin-point causes of inefficiences in the performance of workloads running on these devices. In this blog, I describe a few of these existing profiling tools along with the functionalities they provide.
                 
+                Primarily, Nvidia provides three main profiling tools - Nsight Systems, Nsight Compute, and CUPTI. In addition, it also provides a system monitoring tool named Nvidia SMI which is very useful for a systems researcher. Apart from these, there are a few other tools as well, such as Nvidia Data Center GPU Manager (DCGM) and Nsight Graphics, which I will (probably?) cover in a future blog.
 
                 <ul>
-                    <li>Nvidia Nsight Systems</li>
-                    <li>Nvidia Nsight Compute</li>
-                    <li>CUPTI - <a href="https://docs.nvidia.com/cupti/main/main.html"></a>CUPTI</a>, the CUDA Profiling Tools Interface, ensures seamless profiling compatibility for CUDA applications across various GPU architectures 
-                        and CUDA driver versions
+                    <li>Nsight Systems
+
                     </li>
-                    <li>NVML & Nvidia-SMI - Directly query NVML using c API to get the intermediate memory/compute usage values - https://pypi.org/project/nvidia-ml-py/
+                    <li>Nsight Compute
+
+                    </li>
+                    <li>CUPTI - <a href="https://docs.nvidia.com/cupti/main/main.html"></a>CUPTI</a>, the CUDA Profiling Tools Interface, ensures seamless profiling compatibility for CUDA applications across various GPU architectures and CUDA driver versions. It has both C and Python APIs, and can profile code both on CPU and GPU. CUPTI supports tracing, i.e., collection of timestamps and metadata related to various GPU/CUDA events, and profiling, i.e., collection of GPU performance metrics per kernel or set of kernels. PyTorch Profiler interacts with CUPTI under the hood to obtain the various events for trace generation. <br><br>
+                        
+                    The various functionalities supported by CUPTI are as follows:<br>
+                    <ul>
+                        <li>It enables low-overhead profiling by providing callback mechanism to notify subscribers of an event of its occurence.</li>
+                        <li>It provides the option to profile a specific range within an execution.</li>
+                        <li>It supports the capability of sampling the warp program counter and scheduler state to identify reasons for stall.</li>
+                        <li>It can collect hardware metrics by sampling of GPU performance monitors and kernel performance metrics at source level by SASS patching.</li>
+                        <li>It also provides support for automatically saving and restoring the functional state of the CUDA device.</li>
+                    </ul>
+
+                    Few important points to note about CUPTI:<br>
+
+
+
+                    </li>
+                    <li>Nvidia SMI - 
+                        Directly query NVML using c API to get the intermediate memory/compute usage values - https://pypi.org/project/nvidia-ml-py/
                     </li>
                 </ul>
             </p>
