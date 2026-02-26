@@ -32,19 +32,23 @@
         </header>
         <section class="blog-post">
             <h2 class="blog-title">NVIDIA Profiling Tools</h2>
-            <p class="blog-date">Published in January 2026</p>
+            <p class="blog-date">Published in February 2026</p>
             <p align="justify">
                 The increasing popularity of Nvidia GPUs can be partially attributed to the availability of a stable ecosystem of tools which aid in improving the usability of these accelerators. One such very important set of tools are the profiling tools, which provide fine grained visibility into the hardware as well as software stack built on top of it. This, in turn, helps to find out bottlenecks and pin-point causes of inefficiences in the performance of workloads running on these devices. In this blog, I describe a few of these existing profiling tools along with the functionalities they provide.
                 
                 Primarily, Nvidia provides three main profiling tools - Nsight Systems, Nsight Compute, and CUPTI. In addition, it also provides a system monitoring tool named Nvidia SMI which is very useful for a systems researcher. Apart from these, there are a few other tools as well, such as Nvidia Data Center GPU Manager (DCGM) and Nsight Graphics, which I will (probably?) cover in a future blog.
 
                 Nsight Systems
+                
+                <br><br><br>
 
                 Nsight Compute
+                
+                <br><br><br>
 
-                CUPTI - <a href="https://docs.nvidia.com/cupti/main/main.html"></a>CUPTI</a>, the CUDA Profiling Tools Interface, ensures seamless profiling compatibility for CUDA applications across various GPU architectures and CUDA driver versions. It has both C and Python APIs, and can profile code both on CPU and GPU. CUPTI supports tracing, i.e., collection of timestamps and metadata related to various GPU/CUDA events, and profiling, i.e., collection of GPU performance metrics per kernel or set of kernels. PyTorch Profiler interacts with CUPTI under the hood to obtain the various events for trace generation. <br><br><br>
+                CUPTI - <a href="https://docs.nvidia.com/cupti/main/main.html"></a>CUPTI</a>, the CUDA Profiling Tools Interface, ensures seamless profiling compatibility for CUDA applications across various GPU architectures and CUDA driver versions. It has both C and Python APIs, and can profile code both on CPU and GPU. CUPTI supports tracing, i.e., collection of timestamps and metadata related to various GPU/CUDA events, and profiling, i.e., collection of GPU performance metrics per kernel or set of kernels. PyTorch Profiler interacts with CUPTI under the hood to obtain the various events for trace generation. <br><br>
                         
-                The various functionalities supported by CUPTI are as follows:<br><br>
+                The various functionalities supported by CUPTI are as follows:<br>
                 
                 It enables low-overhead profiling by providing callback mechanism to notify subscribers of an event of its occurence.<br>
                 It provides the option to profile a specific range within an execution.<br>
