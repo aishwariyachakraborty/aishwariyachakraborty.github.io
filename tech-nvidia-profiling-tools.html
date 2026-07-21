@@ -75,16 +75,14 @@
                 <br><br><br>
 
                 <b>CUPTI: </b> <br>
-                The CUDA Profiling Tools Interface or CUPTI ensures seamless profiling compatibility for CUDA applications across various GPU architectures and CUDA driver versions. It has both C and Python APIs, and can profile code both on CPU and GPU. CUPTI supports tracing, i.e., collection of timestamps and metadata related to various GPU/CUDA events, and profiling, i.e., collection of GPU performance metrics per kernel or set of kernels. PyTorch Profiler interacts with CUPTI under the hood to obtain the various events for trace generation. <br><br>
-                        
-                The various functionalities supported by CUPTI are as follows:
+                The CUDA Profiling Tools Interface or CUPTI ensures seamless profiling compatibility for CUDA applications across various GPU architectures and CUDA driver versions. It has both C and Python APIs, and can profile code both on CPU and GPU. CUPTI supports tracing, i.e., collection of timestamps and metadata related to various GPU/CUDA events, and profiling, i.e., collection of GPU performance metrics per kernel or set of kernels. PyTorch Profiler interacts with CUPTI under the hood to obtain the various events for trace generation. The various functionalities supported by CUPTI are as follows: 
             </p>
                 <ul>
-                    <li>It enables low-overhead profiling by providing callback mechanism to notify subscribers of an event of its occurence.</li>
-                    <li>It provides the option to profile a specific range within an execution.</li>
-                    <li>It supports the capability of sampling the warp program counter and scheduler state to identify reasons for stall.</li>
-                    <li>It can collect hardware metrics by sampling of GPU performance monitors and kernel performance metrics at source level by SASS patching.</li>
-                    <li>It also provides support for automatically saving and restoring the functional state of the CUDA device.</li>
+                    <li>Enables low-overhead profiling by providing callback mechanism to notify subscribers of an event of its occurence.</li>
+                    <li>Provides the option to profile a specific range within an execution.</li>
+                    <li>Supports the sampling the warp program counter and scheduler state to identify reasons for stall.</li>
+                    <li>Collects hardware metrics by sampling GPU performance monitors and kernel performance metrics at source level by SASS patching.</li>
+                    <li>Provides support for automatically saving and restoring the functional state of the CUDA device.</li>
                 </ul>
             <p align="justify">
                 For more info, go through <a href="https://docs.nvidia.com/cupti">the official documentation.</a>
