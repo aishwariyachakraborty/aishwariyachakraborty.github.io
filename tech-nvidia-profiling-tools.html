@@ -41,12 +41,13 @@
                 <br><br><br>
 
                 <b>Nsight Systems:</b><br>
-                System wide performance analysis tool - helps to visualize workload and its resource usage in terms of various system metrics on a timeline, thereby aiding in identifying areas of performance improvement and tuning for scaling across any number of resources. It can track CPU and GPU events and correlate them to establish a timeline. It can look inside CUDA, cuBLAS, cuDNN, and NVIDIA TensorRT. Different metrics made available by Nsight Systems include PCIe throughput, NVIDIA NVLink®, and dynamic random-access memory (DRAM) activity, SM utilization, Tensor Core activity, instruction throughput, warp occupancy, and network metrics in multi-node cases. Nsight Systems supports two methods of code annotations to limit profile duration: 
+                System wide performance analysis tool - helps to visualize workload and its resource usage in terms of various system metrics on a timeline, thereby aiding in identifying areas of performance improvement and tuning for scaling across any number of resources. It can track CPU and GPU events and correlate them to establish a timeline. It can look inside CUDA, cuBLAS, cuDNN, and NVIDIA TensorRT. Different metrics made available by Nsight Systems include PCIe throughput, NVIDIA NVLink®, and dynamic random-access memory (DRAM) activity, SM utilization, Tensor Core activity, instruction throughput, warp occupancy, and network metrics in multi-node cases. Nsight Systems supports two methods of code annotations to limit profile duration:
+            </p>
                 <ul>
                     <li>cudaProfilerStart() and cudaProfilerStop() APIs in the cuda_profiler_api.h header file to limit profiling to a region of a CUDA application.</li>
                     <li>use of NVIDIA Tools Extension (NVTX), an application interface to the NVIDIA Profiling tools, to annotate the profiler timeline with events and ranges and to customize their appearance and assign names to resources such as CPU threads and devices.</li>
                 </ul>
-                
+            <p align="justify">
                 It can be used as a CLI, GUI, or as a Jupyter extension. After profiling, it generates a report file with .nsys-rep extension which can be analyzed further to get more information. We can also <a href="https://pypi.org/project/nvidia-ml-py/">directly query NVML using c API</a> to get the intermediate memory/compute usage values. For more info, go through <a href="https://docs.nvidia.com/nsight-systems">the official documentation.</a>  
                 
                 <br><br><br>
@@ -56,16 +57,16 @@
 
                 Frontend has both UI and CLI versions, which runs on the host. Host and target can be the same machine or different -- the remote target might as well have a different OS.
                 Nsight Compute inserts its measurement libraries into the application process, which allow the profiler to intercept communication with the CUDA user-mode driver. The requested performance metrics are collected when a kernel launch is detected and the results are transferred to the frontend. 
-                All metrics may not be possible to collect in a single pass. In such cases, kernels or workloads may be replayed via several modes: 
-
+                All metrics may not be possible to collect in a single pass. In such cases, kernels or workloads may be replayed via several modes:
+            </p>
                 <ul>
                     <li>Kernel replay: All accessible memory for the kernel are saved and restored for each pass.</li>
                     <li>Application replay: All metrics requested for a specific kernel launch are grouped into one or more passes. The complete application is run multiple times so that in each run, metric values from one of those passes can be collected per kernel. Does not have memory save-and-restore overhead.</li>
-                    <li>Range replay: Complete ranges of CUDA API calls and kernel launches within the profiled application are captured and replayed. The range is defined using Profiler 
+                    <li>Range replay: Complete ranges of CUDA API calls and kernel launches within the profiled application are captured and replayed. The range is defined using Profiler
                 Start/Stop API or NVTX Ranges.</li>
                     <li>Application range replay: A range of workloads is replayed by re-running the entire application without modifying interactions or saving and restoring memory. One pass is collected for each range in every application execution.</li>
                 </ul>
-
+            <p align="justify">
                 Nsight compute has a memory chart feature which shows a graphical, logical representation of performance data for memory subunits on and off the GPU. This includes data transfer sizes, hit rates, number of instructions or requests, etc.
 
                 Many different metrics, including warp program counter and warp scheduler state, are collected using Nsight compute by sampling GPU's performance monitors periodically. Depending on the selected metric, data is collected either through a hardware performance monitor on the GPU, through software patching of the kernel instructions or via a launch or device attribute. Metrics which are hardware-provided and don’t have string “sass” in their names are collected with less overheads. On the other hand, those instrumented by software and having "sass" in their names are expensive to collect as CUPTI needs to instrument the kernel to collect these and these need to be collected in individual passes to prevent impact of instrumented code on other metrics.
@@ -76,7 +77,8 @@
                 <b>CUPTI: </b> <br>
                 The CUDA Profiling Tools Interface or CUPTI ensures seamless profiling compatibility for CUDA applications across various GPU architectures and CUDA driver versions. It has both C and Python APIs, and can profile code both on CPU and GPU. CUPTI supports tracing, i.e., collection of timestamps and metadata related to various GPU/CUDA events, and profiling, i.e., collection of GPU performance metrics per kernel or set of kernels. PyTorch Profiler interacts with CUPTI under the hood to obtain the various events for trace generation. <br><br>
                         
-                The various functionalities supported by CUPTI are as follows:<br>
+                The various functionalities supported by CUPTI are as follows:
+            </p>
                 <ul>
                     <li>It enables low-overhead profiling by providing callback mechanism to notify subscribers of an event of its occurence.</li>
                     <li>It provides the option to profile a specific range within an execution.</li>
@@ -84,7 +86,7 @@
                     <li>It can collect hardware metrics by sampling of GPU performance monitors and kernel performance metrics at source level by SASS patching.</li>
                     <li>It also provides support for automatically saving and restoring the functional state of the CUDA device.</li>
                 </ul>
-
+            <p align="justify">
                 For more info, go through <a href="https://docs.nvidia.com/cupti">the official documentation.</a>
             </p>
         </section>
