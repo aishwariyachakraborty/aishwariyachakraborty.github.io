@@ -38,6 +38,8 @@
                 
                 Primarily, Nvidia provides three main profiling tools - Nsight Systems, Nsight Compute, and CUPTI. In addition, it also provides a system monitoring tool named Nvidia SMI, which is very useful for a systems engineer/researcher. Apart from these, there are a few other tools as well, such as Nvidia Data Center GPU Manager (DCGM) and Nsight Graphics, which I will (probably?) cover in a future blog.
 
+                <br><br><br>
+
                 <b>Nsight Systems:</b><br>
                 System wide performance analysis tool - helps to visualize workload and its resource usage in terms of various system metrics on a timeline, thereby aiding in identifying areas of performance improvement and tuning for scaling across any number of resources. It can track CPU and GPU events and correlate them to establish a timeline. It can look inside CUDA, cuBLAS, cuDNN, and NVIDIA TensorRT. Different metrics made available by Nsight Systems include PCIe throughput, NVIDIA NVLink®, and dynamic random-access memory (DRAM) activity, SM utilization, Tensor Core activity, instruction throughput, warp occupancy, and network metrics in multi-node cases. Nsight Systems supports two methods of code annotations to limit profile duration: 
                 <ul>
@@ -67,11 +69,6 @@
                 Nsight compute has a memory chart feature which shows a graphical, logical representation of performance data for memory subunits on and off the GPU. This includes data transfer sizes, hit rates, number of instructions or requests, etc.
 
                 Many different metrics, including warp program counter and warp scheduler state, are collected using Nsight compute by sampling GPU's performance monitors periodically. Depending on the selected metric, data is collected either through a hardware performance monitor on the GPU, through software patching of the kernel instructions or via a launch or device attribute. Metrics which are hardware-provided and don’t have string “sass” in their names are collected with less overheads. On the other hand, those instrumented by software and having "sass" in their names are expensive to collect as CUPTI needs to instrument the kernel to collect these and these need to be collected in individual passes to prevent impact of instrumented code on other metrics.
-
-
-
-            
-
 
                 For more info, go through <a href="https://docs.nvidia.com/nsight-compute">the official documentation.</a>
                 <br><br><br>
