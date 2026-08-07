@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X3P7QNHRFG"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-X3P7QNHRFG');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aishwariya Chakraborty - Notes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="blog.html">Notes</a></li> <!-- Add this line for the blog link -->
+                </ul>
+            </nav>
+            <hr>
+        </header>
+        <section class="blog-post">
+            <h2 class="blog-title">DL Compilers Series - 3 - Triton</h2>
+            <p class="blog-date">Published in April 2026</p>
+            <p align="justify">
+                To understand triton, let's first recap the GPU architecture and programming model briefly.<br>
+                <u>Basics of GPU architecture:</u>
+                <ul>
+                    <li>Many (thousands of) cores, which can work at the same time.</li>
+                    <li>GPU has repeated tiles of hardware blocks (of cores) - each block is analogous to streaming multiprocessors (SMs) or cooperative thread array (CTAs)</li>
+                    <li>Each SM has multiple identical vector compute units (CUDA cores) and matrix compute units (tensor cores).</li>
+                    <li>Vector compute units follow SIMT: 32 threads form a warp. Each thread in the warp works on the same instruction at the same time but independently. All threads in a warp have the same program counter.</li>
+                    <li>Matrix compute units are different: Each thread works on a part of the input data/matrix. Threads work collaboratively to reach final output. Each warp viewed as a single logical unit.</li>
+                    <li>Memory hierarchy:
+                        <ul>
+                            <li>One DRAM which is global, bigger in size (~80GB in A100) but lower bandwidth (~1.5 GB)</li>
+                            <li>One SRAM local to each Streaming Microprocessor (SM), smaller in size (~MBs) but high bandwidth.</li>
+                            <li>All data must be brought to the SRAM before being operated on.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <br><br><br>
+                Triton is a programming language for GPUs, which currently supports NVIDIA and AMD GPUs. Unlike CUDA, where you define the behavior of a single thread, Triton kernels define operations on blocks of data. At present, triton code does not run on CPU. Triton is open source, and is ~90% as fast as CUDA. <br><br>
+                
+                <u>Triton Programming Model</u><br>
+                <ul>
+                    <li>Each kernel has multiple instances, each called a program defined by a PID. The kernel for each program is same, only the data is 
+                        different, and determined based on the PID.</li>
+                    <li>Atleast one pogram per SM.</li>
+                    <li>All the instructions + the data on which the cores in the SM will work on must fit into the available SRAM of the SM, otherwise it will throw error. Number of PIDs on a single SM = Amount of SRAM // SRAM required per PID </li>
+                    <li>If two different kernels share the same data, the data is loaded only once.</li>
+                    <li>Thread is the smallest unit of actual computation / performs single FLOP.</li>
+                    <li>
+                        <ul>
+                            <li>Warp is the smallest possible group of threads (typically 32 in Nvidia GPUs) which perform the same program. (i.e., WARP can work on 32 entries of a tensor at a time)</li>
+                            <li>Many threads share a smaller number of cores via fast scheduling.</li>
+                            <li>For max parallelization, make sure all threads in a warp has data to work with (i.e., split data into multiples of 32), 
+                                otherwise the remaining threads in the warp will be idle.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        
+                    </li>
+                </ul>
+                
+                 
+                <u>Triton Code:</u><br>
+                <ul>
+                <li>Grid - How many instances of the kernel to be created (total size of data to create / BLOCK_SIZE)</li>
+                <li>BLOCK_SIZE - How much data one program instance processes</li>
+                <li>@triton.jit tells python that this is not a regular function but a triton kernel which needs to be compiled on GPU. we always pass 
+                    pointers to the input and outputs. </li>
+                <li>tl.constExpr - compile time argument which wont change much. If this changes, entirely new kernel will be created.</li>
+                <li>Rough Structure of Kernel: 
+                    <ul>
+                        <li>Define the PID usint <code>tl.program_id</code>/li>
+                        <li>Define the block start in terms of PID, and offsets in terms of block start and block size</li>
+                        <li>Create the mask to account for when to end the offset for final block</li>
+                        <li>Load input data from DRAM to SRAM using tl.load with mask and other=None/-inf/inf as appropriate (set the unused entries to some value)</li>
+                        <li>Calculate output</li>
+                        <li>Write output data back to DRAM using <code>tl.store</code> and mask to make sure only correct data is there.</li>
+                    </ul>
+                </li>
+                <li>Get properties of the device: <code>triton.runtime.driver.active.utils.get_device_properties(DEVICE.index)</code>
+                            {'max_shared_mem': 166912, 
+                            'max_num_regs': 65536, 
+                            'multiprocessor_count': 108, 
+                            'warpSize': 32, 
+                            'sm_clock_rate': 1410000, 
+                            'mem_clock_rate': 1593000, 
+                            'mem_bus_width': 5120}
+                </li>
+                <li>The number of programs that can be assigned to an SM is limited by the SRAM occupancy as well as the register occupancy.</li>
+                Pipelining:
+                    Even within a single program, instead of performing the steps sequentially, GPU can do memory reads while doing FLOPs or it can 
+                    do memory writes while doing other operations, if there are no dependencies between them. 'num_stages' allows us to specify how 
+                    many ops the GPU should do.
+                </ul>
+
+                Dump all IRs: TRITON_ALWAYS_COMPILE=1 MLIR_ENABLE_DUMP=1 TRITON_DISABLE_LINE_INFO=1 NVPTX_ENABLE_DUMP=1
+
+            
+
+
+            <u>Fused softmax kernel example from tutorial:</u>
+            
+            <pre style="overflow-x: auto;" >
+                <code>
+    @triton.jit
+    def softmax_kernel(
+        input_ptr, output_ptr,
+        input_row_stride, output_row_stride,
+        n_rows, n_cols,
+        BLOCK_SIZE: tl.constexpr,
+        num_stages: tl.constexpr,
+    ):
+
+        row_start = tl.program_id(0)
+        row_step = tl.num_programs(0)
+
+        for row_idx in tl.range(row_start, n_rows, row_step, num_stages=num_stages): 
+            row_start_idx = input_ptr + row_idx * input_row_stride
+            col_offsets = tl.arange(0, BLOCK_SIZE)
+            
+            row = tl.load(row_start_idx + col_offsets, mask = col_offsets&lt;n_cols, other=-float('inf'))
+            row_minus_max = row - tl.max(row, axis=0)
+            numerator = tl.exp(row_minus_max)
+            denominator = tl.sum(numerator, axis=0)
+            softmax_output = numerator/denominator
+
+            output_row_ptr = output_ptr + row_idx * output_row_stride
+            
+            tl.store(output_row_ptr+col_offsets, softmax_output, mask = col_offsets&lt;n_cols)
+                </code>
+            </pre>
+                <ul>
+                    <li>tl.program_id(axis) returns the index of the current instance along a given dimension.</li>
+                    <li>Here num_stages tells GPU to do pipelining between ops in the for-loop.</li>
+                    <li>In case the number of rows > num of programs being instantiated, then each PID will get more than one row. And those rows wont be the one 
+                    right after. (The one right after would be assigned to the next PID.) We have to jump down "row_step" rows to get to the next one. </li>
+                    <li>We have to use mask while loading as as BLOCK_SIZE may be > n_cols, which would lead to reading the values out of range of the data.</li>
+                    <li>We have to use mask while storing as it prevents us from overwriting any unwanted data.</li>
+                </ul>
+            </p>
+
+
+
+            References:
+                https://isamu-website.medium.com/understanding-the-triton-tutorials-part-1-6191b59ba4c
+                http://github.com/VikParuchuri/triton_tutorial/blob/master/01_gpu_basics.ipynb
+                https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/introduction.html
+                https://triton-lang.org/main/getting-started/tutorials/03-matrix-multiplication.html
+                https://www.youtube.com/watch?v=sDSvJ6juB2I&list=PL_NMDNzkCbLR69QafQUa6yTx-T-VPIoaZ&index=6
+                https://www.lei.chat/posts/triton-compiler-development-tips/
+                https://openai.com/index/triton/
+                https://apxml.com/courses/compiler-optimizations-machine-learning/chapter-5-hardware-aware-code-generation/hands-on-writing-triton-kernels
+                https://arunjitha.medium.com/simplifying-cuda-kernels-with-triton-a-pythonic-approach-to-gpu-programming-79bb7121e974
+                https://subhadipmitra.com/blog/2025/triton-kernels-llm-inference/
+        </section>
+    </div>
+</body>
+</html>
+
+
+
+
+
